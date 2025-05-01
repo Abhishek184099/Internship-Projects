@@ -4,10 +4,10 @@ import { responseType } from '../contracts/response.interface.js';
 import { userCreateSchema, userUpdateSchema } from '../utils/validation.js';
 
 export class UserController {
-    private userService: UserService
+    
 
-    constructor() {
-        this.userService = new UserService()
+    constructor(private userService : UserService) {
+  
     }
 
     createUser = async (req: Request, res: Response<responseType<any>>, next: NextFunction) => {

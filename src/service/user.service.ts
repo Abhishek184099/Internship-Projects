@@ -2,6 +2,7 @@ import { responseType } from "../contracts/response.interface.js";
 import User from "../models/User.js";
 import { userType } from "../contracts/user.interface.js";
 import { logger } from "../utils/logger.js";
+import { isExistUser } from "../utils/validation.js";
 
 export class UserService {
     async createUser(userData: userType) : Promise<responseType<userType>> {
@@ -37,17 +38,7 @@ export class UserService {
        async getUserById (id: string) : Promise<responseType<userType>> {
         try {
             const user = await User.findById(id);
-            if (!user) {
-                return {
-                    statusCode: 404,
-                    message: 'User not found',
-                };
-            }
-            return {
-                statusCode: 200,
-                message: 'User fetched successfully',
-                data: user
-            };
+            return isExistUser(user as userType , 'User fetched successfully');
         }
         catch (error) {
             logger.error(`Error fetching user by ID: ${error}`);
@@ -57,18 +48,8 @@ export class UserService {
 
     async updateUser (id: string, userData: Partial<userType>) : Promise<responseType<userType>> {
         try {
-            const user = await User.findByIdAndUpdate   (id, userData, { new: true });
-            if (!user) {
-                return {
-                    statusCode: 404,
-                    message: 'User not found',
-                };
-            }
-            return {
-                statusCode: 200,
-                message: 'User updated successfully',
-                data: user
-            }
+            const user = await User.findByIdAndUpdate(id, userData, { new: true });
+         return  isExistUser(user as userType , 'User updated successfully');
         } catch (error) { 
             logger.error(`Error updating user: ${error}`);
             throw error;
@@ -78,16 +59,7 @@ export class UserService {
     async deleteUser (id: string) : Promise<responseType<userType>> {
         try {
             const user = await User.findByIdAndDelete(id);
-            if(!user) {
-                return {
-                    statusCode: 404,
-                    message: 'User not found',
-                };
-            }
-            return {
-                statusCode: 200,
-                message: 'User deleted successfully',
-            };
+           return isExistUser(user as userType , 'User deleted successfully');
         } catch (error) {
             logger.error(`Error deleting user: ${error}`);
             throw error;

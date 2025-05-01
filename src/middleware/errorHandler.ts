@@ -9,7 +9,7 @@ export const errorHandler = (
   res: Response<responseType<void>>,
   next: NextFunction
 ): void => {
-  logger.error(`${err.message}`);
+  logger.error(`${err}`);
 
   if (err instanceof ZodError) {
     res.status(400).json({
@@ -21,7 +21,7 @@ export const errorHandler = (
   }
 
   res.status(500).json({
-    statusCode: 500,
+    statusCode: 500,  
     message: 'Internal server error',
     error: err.message
   });
